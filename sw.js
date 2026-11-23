@@ -1,5 +1,5 @@
 'use strict';
-const BUILD = '2708448d';
+const BUILD = 'bbb8f6c0';
 
 const SHELL = 'shell-' + BUILD;
 const AUDIO = 'audio-v1';

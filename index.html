@@ -68,6 +68,12 @@
       <div class="row-lbl">Legal light</div>
       <button type="button" id="b-locate" class="act">Use this phone's location</button>
       <div id="lg-status" class="row-note"></div>
+      <div class="row-note">Or set the place by hand, to the nearest tenth of a degree. A dropped pin in the phone's Maps shows both numbers.</div>
+      <div class="byhand">
+        <label>Latitude (north)<input id="lg-lat" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="41.9"></label>
+        <label>Longitude (west)<input id="lg-lon" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="87.6"></label>
+        <button type="button" id="b-byhand" class="small">Save</button>
+      </div>
       <div class="row-note">Starts this many minutes before sunrise</div>
       <div class="step" data-key="lgBefore"></div>
       <div class="row-note">Ends this many minutes after sunset</div>

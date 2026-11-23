@@ -1,5 +1,5 @@
 'use strict';
-const BUILD = '2708448d';
+const BUILD = 'bbb8f6c0';
 
 const $ = id => document.getElementById(id);
 const audio = $('player');
@@ -589,7 +589,7 @@ const RAD = Math.PI / 180;
 const clock = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
 const dayName = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
 const zone = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } };
-let locating = false, locateNote = '';
+let locating = false, locateNote = '', locateRun = 0, locateWatch = 0;
 
 // Where the sun is at a moment: its declination in radians and the equation of time in minutes.
 function sunAt(ms) {
@@ -650,31 +650,87 @@ function drawLegal() {
   setText($('lg-t'), line);
 }
 
+// Kept to a tenth of a degree, a few miles: plenty for sunrise, and not a pin on a stand.
+function setPlace(lat, lon, how) {
+  cfg.geo = { lat: Math.round(lat * 10) / 10, lon: Math.round(lon * 10) / 10, at: now(), zone: zone() };
+  saveCfg();
+  note('location saved for legal light, ' + how);
+  applyCfg();
+}
+
+// Which browser this is on an iPhone, for pointing at the right switch in the phone's Settings.
+function browserName() {
+  const ua = navigator.userAgent;
+  if (!/iPhone|iPad|iPod/.test(ua)) return '';
+  return /FxiOS/.test(ua) ? 'Firefox' : /CriOS/.test(ua) ? 'Chrome' : /EdgiOS/.test(ua) ? 'Edge' : 'Safari Websites';
+}
+
+function refusedHelp() {
+  const b = browserName();
+  return 'The phone would not share its location with this page. '
+    + (b ? `In the phone's Settings, open Privacy & Security, then Location Services, then ${b}, and choose While Using the App. ` : '')
+    + 'Then close this page, open it again, press the button once more and tap Allow when the phone asks. Or set the place by hand below.';
+}
+
 function locate() {
   if (locating) return;
   if (!navigator.geolocation || !window.isSecureContext) {
-    locateNote = 'This address cannot ask the phone where it is. That needs the https address.';
+    locateNote = 'This address cannot ask the phone where it is. Set the place by hand below.';
     return drawSetup();
   }
+  const run = ++locateRun;
   locating = true;
   locateNote = '';
   drawSetup();
-  navigator.geolocation.getCurrentPosition(p => {
+  const stop = text => { clearTimeout(locateWatch); locating = false; locateNote = text; drawSetup(); };
+  // The phone's own time limit only starts once permission has been given. A request the phone
+  // never asks about would wait for ever, so after a while the button is freed and says so.
+  const wait = ms => {
+    clearTimeout(locateWatch);
+    locateWatch = setTimeout(() => {
+      note('location: no answer from the phone');
+      stop('The phone has not answered. If it is asking for permission, tap Allow. If it is not, close this page, open it again and press the button once more. Or set the place by hand below.');
+    }, ms);
+  };
+  const got = p => {
+    if (run !== locateRun) return;
+    clearTimeout(locateWatch);
     locating = false;
-    // Kept to a tenth of a degree, a few miles: plenty for sunrise, and not a pin on a stand.
-    cfg.geo = { lat: Math.round(p.coords.latitude * 10) / 10, lon: Math.round(p.coords.longitude * 10) / 10, at: now(), zone: zone() };
-    saveCfg();
-    note('location saved for legal light');
-    applyCfg();
-  }, e => {
-    locating = false;
-    locateNote = e.code === 1
-      ? 'The phone would not share its location. On an iPhone: Settings, Privacy & Security, Location Services, Safari Websites, While Using the App.'
-      : 'The phone could not find itself. Step into the open and press again.';
-    note('location not found, code ' + e.code);
-    drawSetup();
-    // A fresh fix every time, never one the phone has kept: the button is pressed because the phone has moved.
-  }, { enableHighAccuracy: true, timeout: 60000, maximumAge: 0 });
+    locateNote = '';
+    setPlace(p.coords.latitude, p.coords.longitude, 'from the phone');
+  };
+  const failed = (e, precise) => {
+    if (run !== locateRun) return;
+    note(`location: code ${e.code}${precise ? ' on the second try' : ''}`);
+    if (e.code === 1) return stop(refusedHelp());
+    if (!precise) return ask(true);
+    stop('The phone could not find itself. Step into the open and press again, or set the place by hand below.');
+  };
+  // A quick, rough answer first: a few miles is close enough. If that fails, one slower try that
+  // lets the phone use its GPS. Always a fresh answer, never one the phone has kept, because the
+  // button is pressed when the phone has moved.
+  const ask = precise => {
+    wait(precise ? 60000 : 30000);
+    navigator.geolocation.getCurrentPosition(got, e => failed(e, precise),
+      { enableHighAccuracy: precise, timeout: precise ? 45000 : 12000, maximumAge: 0 });
+  };
+  ask(false);
+}
+
+// For when the phone will not give a location: the place typed in, to a tenth of a degree.
+function placeByHand() {
+  const read = id => parseFloat($(id).value.replace(',', '.'));
+  const lat = read('lg-lat'), lon = Math.abs(read('lg-lon'));
+  if (!(lat >= 15 && lat <= 72) || !(lon >= 50 && lon <= 170)) {
+    locateNote = 'Those do not look right. For North America the latitude is between 15 and 72 and the longitude between 50 and 170. Example: 41.9 and 87.6.';
+    return drawSetup();
+  }
+  locateRun++;                 // anything the phone says about an earlier request no longer counts
+  clearTimeout(locateWatch);
+  locating = false;
+  locateNote = '';
+  for (const id of ['lg-lat', 'lg-lon']) { $(id).blur(); $(id).dataset.shown = ''; }   // so the boxes go to what was saved
+  setPlace(lat, -lon, 'typed in');
 }
 
 // ---------------------------------------------------------------- the screen
@@ -843,6 +899,11 @@ function drawSetup() {
     setText(step.querySelector('.val'), cfg[key] + ' min');
   }
   const g = cfg.geo, t = g && g.zone === zone() && legalTimes(g, now());
+  // The boxes show the saved place, but are left alone while someone is typing in them.
+  for (const [id, v] of [['lg-lat', g ? g.lat : ''], ['lg-lon', g ? Math.abs(g.lon) : '']]) {
+    const box = $(id);
+    if (document.activeElement !== box && box.dataset.shown !== String(v)) { box.value = v; box.dataset.shown = String(v); }
+  }
   setText($('lg-status'), locating ? 'Asking the phone where it is…'
     : locateNote ? locateNote
     : !g ? 'No location saved yet.'
@@ -873,6 +934,8 @@ function wire() {
   $('b-setup').addEventListener('click', () => { locateNote = ''; $('setup').hidden = false; drawSetup(); drawSaved(); });
   $('b-done').addEventListener('click', closeSetup);
   $('b-locate').addEventListener('click', locate);
+  $('b-byhand').addEventListener('click', placeByHand);
+  for (const id of ['lg-lat', 'lg-lon']) $(id).addEventListener('keydown', e => { if (e.key === 'Enter') placeByHand(); });
   $('b-redo').addEventListener('click', redownload);
   $('saved').addEventListener('click', () => { if (updateWaiting && S.mode === 'idle') location.reload(); });
 
