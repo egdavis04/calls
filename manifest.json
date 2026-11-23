@@ -1,0 +1,186 @@
+{
+ "built": "2026-11-22",
+ "sounds": [
+  {
+   "id": "tending-grunts",
+   "title": "Tending grunts",
+   "kind": "sequence",
+   "duration_s": 3600,
+   "file": {
+    "path": "audio/deer-tending-grunts-60min.m4a",
+    "bytes": 5127532,
+    "v": "5d0e33ac3a"
+   },
+   "preview": {
+    "path": "previews/deer-tending-grunts-preview.m4a",
+    "bytes": 349566,
+    "v": "79b577ba24"
+   },
+   "windows": [
+    {
+     "start_s": 0,
+     "end_s": 120,
+     "label": "soft",
+     "first_sound_s": 1.0,
+     "last_sound_s": 114.6
+    },
+    {
+     "start_s": 720,
+     "end_s": 840,
+     "label": "medium",
+     "first_sound_s": 721.0,
+     "last_sound_s": 833.3
+    },
+    {
+     "start_s": 1440,
+     "end_s": 1560,
+     "label": "hottest",
+     "first_sound_s": 1441.0,
+     "last_sound_s": 1556.2
+    },
+    {
+     "start_s": 2160,
+     "end_s": 2280,
+     "label": "hot",
+     "first_sound_s": 2161.0,
+     "last_sound_s": 2275.1
+    },
+    {
+     "start_s": 2880,
+     "end_s": 3000,
+     "label": "fading",
+     "first_sound_s": 2881.0,
+     "last_sound_s": 2993.7
+    }
+   ]
+  },
+  {
+   "id": "grunt-doe-bleat",
+   "title": "Grunt + doe bleat",
+   "kind": "sequence",
+   "duration_s": 3600,
+   "file": {
+    "path": "audio/deer-grunt-doe-bleat-60min.m4a",
+    "bytes": 3904499,
+    "v": "ac50f9ec3c"
+   },
+   "preview": {
+    "path": "previews/deer-grunt-doe-bleat-preview.m4a",
+    "bytes": 223040,
+    "v": "69dab6bf52"
+   },
+   "windows": [
+    {
+     "start_s": 0,
+     "end_s": 120,
+     "label": "doe first, a buck answering",
+     "first_sound_s": 1.1,
+     "last_sound_s": 113.8
+    },
+    {
+     "start_s": 720,
+     "end_s": 840,
+     "label": "buck with her",
+     "first_sound_s": 721.1,
+     "last_sound_s": 835.6
+    },
+    {
+     "start_s": 1440,
+     "end_s": 1560,
+     "label": "busiest",
+     "first_sound_s": 1441.0,
+     "last_sound_s": 1556.0
+    },
+    {
+     "start_s": 2160,
+     "end_s": 2280,
+     "label": "busy",
+     "first_sound_s": 2161.1,
+     "last_sound_s": 2275.4
+    },
+    {
+     "start_s": 2880,
+     "end_s": 3000,
+     "label": "easing off",
+     "first_sound_s": 2881.1,
+     "last_sound_s": 2994.6
+    }
+   ]
+  },
+  {
+   "id": "grunt-rattling",
+   "title": "Grunt + rattling",
+   "kind": "sequence",
+   "duration_s": 3600,
+   "file": {
+    "path": "audio/deer-grunt-rattling-60min.m4a",
+    "bytes": 9125764,
+    "v": "e7143ff1e9"
+   },
+   "preview": {
+    "path": "previews/deer-grunt-rattling-preview.m4a",
+    "bytes": 749976,
+    "v": "e13b8d8583"
+   },
+   "windows": [
+    {
+     "start_s": 0,
+     "end_s": 120,
+     "label": "sparring, building",
+     "first_sound_s": 1.1,
+     "last_sound_s": 113.2
+    },
+    {
+     "start_s": 720,
+     "end_s": 840,
+     "label": "full fight",
+     "first_sound_s": 721.1,
+     "last_sound_s": 836.4
+    },
+    {
+     "start_s": 1440,
+     "end_s": 1560,
+     "label": "the brawl",
+     "first_sound_s": 1441.1,
+     "last_sound_s": 1555.6
+    },
+    {
+     "start_s": 2160,
+     "end_s": 2280,
+     "label": "full fight",
+     "first_sound_s": 2161.2,
+     "last_sound_s": 2273.9
+    },
+    {
+     "start_s": 2880,
+     "end_s": 3000,
+     "label": "breaking off",
+     "first_sound_s": 2881.2,
+     "last_sound_s": 2995.9
+    }
+   ]
+  },
+  {
+   "id": "snort-wheeze",
+   "title": "Snort wheeze",
+   "kind": "oneshot",
+   "duration_s": 4.4,
+   "file": {
+    "path": "audio/deer-snort-wheeze.m4a",
+    "bytes": 99579,
+    "v": "ab3e434060"
+   }
+  },
+  {
+   "id": "snort-wheeze-x2-30s",
+   "title": "Snort wheeze x2 (30 s apart)",
+   "kind": "oneshot",
+   "duration_s": 34.4,
+   "file": {
+    "path": "audio/deer-snort-wheeze-x2-30s.m4a",
+    "bytes": 188567,
+    "v": "79777f1892"
+   }
+  }
+ ]
+}

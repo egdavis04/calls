@@ -1,0 +1,217 @@
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+:root {
+  --bg: #000;
+  --fg: #f2f2f2;
+  --dim: #a3a3a3;
+  --btn: #161616;
+  --edge: #4d4d4d;
+  --fill: #404040;
+  --hot: #ffb300;
+  --mute: #ff453a;
+  --mute-btn: #3d0b08;
+  --muted-bg: #ff453a;
+  --muted-ink: #000;
+  --edge-top: env(safe-area-inset-top, 0px);
+  --edge-bottom: env(safe-area-inset-bottom, 0px);
+}
+:root.red {
+  --fg: #dc2c1e;
+  --dim: #99190f;
+  --btn: #0e0000;
+  --edge: #74150d;
+  --fill: #470c07;
+  --hot: #ff4a38;
+  --mute: #ff4a38;
+  --mute-btn: #1d0302;
+  --muted-bg: #1d0302;
+  --muted-ink: #ff4a38;
+}
+
+html { height: 100%; background: var(--bg); }
+body {
+  margin: 0;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.15 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+.app {
+  height: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+}
+
+button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 4px 6px;
+  background: var(--btn);
+  border: 2px solid var(--edge);
+  border-radius: 14px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: none;
+}
+.btn .lbl { position: relative; font-weight: 800; letter-spacing: .04em; }
+.btn .sub { position: relative; min-height: 14px; margin-top: 4px; font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--dim); }
+.btn .fill { position: absolute; inset: 0; background: var(--fill); transform: scaleX(0); transform-origin: 0 50%; }
+.btn.holding .fill { transform: scaleX(1); transition: transform var(--hold, 3000ms) linear; }
+.btn.full, .btn.armed, .btn.active { border-color: var(--hot); }
+.btn.full .fill { background: var(--hot); opacity: .4; }
+.btn.full .sub, .btn.armed .sub, .btn.active .sub, .btn.flash .sub { color: var(--hot); }
+.btn.off { opacity: .38; }
+
+.legal { flex: 0 0 auto; padding: 5px 12px 6px; border: 1px solid var(--edge); border-radius: 12px; text-align: center; color: var(--dim); }
+.lg-l { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lg-t { margin-top: 2px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.status { flex: 0 0 auto; padding: 10px 14px 12px; border: 2px solid var(--edge); border-radius: 14px; }
+.st-state { font-size: 40px; font-weight: 800; letter-spacing: .03em; line-height: 1; text-transform: uppercase; }
+.st-count { min-height: 30px; margin-top: 6px; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st-info { min-height: 18px; margin-top: 6px; font-size: 15px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar { position: relative; height: 10px; margin: 12px 8px 2px; background: var(--btn); border-radius: 5px; box-shadow: 0 0 0 1px var(--edge); }
+.bar .win { position: absolute; top: 0; bottom: 0; min-width: 5px; background: var(--dim); border-radius: 2px; }
+.bar-dot { position: absolute; top: 50%; left: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--fg); box-shadow: 0 0 0 3px var(--bg); }
+.status.idle .bar { visibility: hidden; }
+.status.calling { border-color: var(--hot); }
+.status.calling .st-state { color: var(--hot); }
+.status.muted {
+  --fg: var(--muted-ink);
+  --dim: var(--muted-ink);
+  --bg: var(--muted-bg);
+  --btn: transparent;
+  --edge: var(--muted-ink);
+  background: var(--muted-bg);
+  border-color: var(--mute);
+  color: var(--muted-ink);
+}
+
+:root.red .status.muted { background: repeating-linear-gradient(135deg, #2c0604 0 10px, #120201 10px 20px); }
+
+.calls { flex: 3 1 0; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+.calls .btn { flex: 1 1 0; min-height: 46px; }
+.calls .lbl { font-size: clamp(18px, 5.5vw, 22px); }
+.shots { flex: 1 1 0; min-height: 46px; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 8px; }
+.shots .lbl { font-size: clamp(13px, 3.9vw, 16px); }
+.ctl { flex: 0 0 54px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.ctl .btn { padding: 2px; border-radius: 12px; }
+.ctl .lbl { font-size: clamp(11px, 3.2vw, 13px); }
+.ctl .sub { margin-top: 3px; font-size: 11px; }
+.mute { flex: 1.5 1 0; min-height: 70px; background: var(--mute-btn); border: 3px solid var(--mute); }
+.mute .lbl { font-size: 34px; letter-spacing: .08em; }
+.mute .sub { color: var(--fg); }
+.mute.off { opacity: .45; }
+
+.foot { flex: 0 0 auto; min-height: 32px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--dim); }
+.small { padding: 7px 14px; background: none; border: 1px solid var(--edge); border-radius: 9px; font-size: 13px; font-weight: 600; color: var(--dim); touch-action: manipulation; }
+
+/* A short screen: legal light goes on one line and the status box tightens, so the height goes to the buttons. */
+@media (max-height: 680px) {
+  .app { gap: 6px; }
+  .legal { display: flex; align-items: baseline; justify-content: center; gap: 8px; padding: 4px 12px 5px; }
+  .lg-l { flex: 0 1 auto; }
+  .lg-t { flex: 0 0 auto; margin-top: 0; }
+  .status { padding: 6px 12px 8px; }
+  .st-state { font-size: 28px; }
+  .st-count { min-height: 23px; margin-top: 3px; font-size: 20px; }
+  .st-info { margin-top: 3px; font-size: 13px; }
+  .bar { margin-top: 8px; }
+  .calls { gap: 6px; }
+  .calls .btn { min-height: 0; padding: 2px 6px; }
+  .calls .lbl { font-size: 18px; }
+  .btn .sub { margin-top: 2px; }
+  .shots { gap: 6px; }
+  .ctl { flex-basis: 46px; }
+  .mute { min-height: 56px; }
+  .foot { min-height: 28px; }
+}
+
+/* A phone turned on its side: legal light, status and Mute on the left, the buttons on the right. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .app {
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) minmax(44px, .5fr) auto;
+    grid-template-areas: "legal calls" "status calls" "mute calls" "mute shots" "foot ctl";
+    gap: 8px 10px;
+  }
+  .legal { grid-area: legal; }
+  .status { grid-area: status; padding: 6px 12px 8px; }
+  .calls { grid-area: calls; }
+  .shots { grid-area: shots; min-height: 0; }
+  .ctl { grid-area: ctl; min-height: 50px; }
+  .mute { grid-area: mute; min-height: 0; }
+  .foot { grid-area: foot; }
+  .st-state { font-size: 28px; }
+  .st-count { min-height: 23px; margin-top: 3px; font-size: 20px; }
+  .st-info { margin-top: 3px; font-size: 13px; }
+  .bar { margin-top: 8px; }
+  .calls .btn { min-height: 0; }
+  .calls .lbl { font-size: 18px; }
+  .btn .sub { margin-top: 2px; }
+}
+
+.arm { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(0, 0, 0, .9); }
+.arm-box { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 18px; text-align: center; }
+.arm-title { font-size: 20px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.arm-btn { min-height: 160px; border-color: var(--hot); touch-action: manipulation; }
+.arm-btn .lbl { font-size: 32px; color: var(--hot); }
+.arm-note { font-size: 15px; line-height: 1.35; color: var(--dim); }
+.arm-note:empty { display: none; }
+
+.setup { position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column; padding: max(10px, env(safe-area-inset-top)) 14px max(10px, env(safe-area-inset-bottom)); background: var(--bg); }
+.setup-head { display: flex; align-items: center; justify-content: space-between; max-width: 520px; width: 100%; margin: 0 auto; padding-bottom: 10px; font-size: 20px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.setup-body { flex: 1 1 0; min-height: 0; max-width: 520px; width: 100%; margin: 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; overscroll-behavior: contain; }
+.row { padding: 12px 0; border-top: 1px solid var(--edge); }
+.row-lbl { margin-bottom: 8px; font-size: 15px; font-weight: 700; }
+.row-note { margin: 8px 0; font-size: 13px; line-height: 1.35; color: var(--dim); }
+.seg, .step { display: flex; align-items: center; gap: 6px; }
+.seg button, .step button, .act { flex: 1 1 0; min-height: 46px; padding: 4px; background: var(--btn); border: 2px solid var(--edge); border-radius: 10px; font-size: 14px; font-weight: 700; touch-action: manipulation; }
+.seg button.on { border-color: var(--hot); color: var(--hot); }
+.act { display: block; width: 100%; }
+.step .val { flex: 1.6 1 0; text-align: center; font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.checks { display: flex; flex-direction: column; gap: 8px; }
+.checks .btn { min-height: 56px; }
+.checks .lbl { font-size: 16px; }
+.diag { margin: 8px 0 0; font: 12px/1.4 ui-monospace, Menlo, monospace; color: var(--dim); white-space: pre-wrap; -webkit-user-select: text; user-select: text; }
+
+/* Opened from the Home Screen icon: the page runs up under the phone's status bar, and there the
+   screen-height unit comes up short by the bar's height. So the page is pinned to the screen's
+   edges instead, and the top is set a little lower to clear the fade the phone draws under the bar.
+   This block stays last so it wins over the rules above. */
+@media (display-mode: standalone) {
+  body { position: fixed; inset: 0; height: auto; }
+  .app { padding-top: calc(env(safe-area-inset-top) + 16px); }
+  .setup { padding-top: calc(env(safe-area-inset-top) + 16px); }
+}

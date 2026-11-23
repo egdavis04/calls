@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Calls">
+<meta name="format-detection" content="telephone=no">
+<title>Call Soundboard</title>
+<link rel="manifest" href="app.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app" class="app">
+
+  <div id="legal" class="legal">
+    <div id="lg-l" class="lg-l">Legal light</div>
+    <div id="lg-t" class="lg-t"></div>
+  </div>
+
+  <header id="status" class="status idle">
+    <div id="st-state" class="st-state">Ready</div>
+    <div id="st-count" class="st-count"></div>
+    <div id="st-info" class="st-info"></div>
+    <div class="bar"><div id="bar-wins"></div><div id="bar-dot" class="bar-dot"></div></div>
+  </header>
+
+  <section id="calls" class="calls"></section>
+  <section id="shots" class="shots"></section>
+
+  <section class="ctl">
+    <button type="button" id="b-now" class="btn hold"><span class="fill"></span><span class="lbl">Call now</span><span class="sub"></span></button>
+    <button type="button" id="b-loop" class="btn"><span class="lbl">Loop</span><span class="sub"></span></button>
+    <button type="button" id="b-delay" class="btn"><span class="lbl">Delay</span><span class="sub"></span></button>
+    <button type="button" id="b-stop" class="btn hold"><span class="fill"></span><span class="lbl">Stop</span><span class="sub"></span></button>
+  </section>
+
+  <button type="button" id="b-mute" class="btn hold mute"><span class="fill"></span><span class="lbl">Mute</span><span class="sub"></span></button>
+
+  <footer class="foot">
+    <span id="saved" class="saved"></span>
+    <button type="button" id="b-setup" class="small">Setup</button>
+  </footer>
+
+</div>
+
+<div id="arm" class="arm">
+  <div class="arm-box">
+    <div class="arm-title">Call Soundboard</div>
+    <button type="button" id="b-arm" class="btn arm-btn"><span class="lbl">Tap to arm</span><span class="sub">nothing plays until you start a call</span></button>
+    <div id="arm-note" class="arm-note"></div>
+    <div id="arm-saved" class="arm-note"></div>
+  </div>
+</div>
+
+<div id="setup" class="setup" hidden>
+  <div class="setup-head"><span>Setup</span><button type="button" id="b-done" class="small">Done</button></div>
+  <div class="setup-body">
+    <div class="row">
+      <div class="row-lbl">Legal light</div>
+      <button type="button" id="b-locate" class="act">Use this phone's location</button>
+      <div id="lg-status" class="row-note"></div>
+      <div class="row-note">Starts this many minutes before sunrise</div>
+      <div class="step" data-key="lgBefore"></div>
+      <div class="row-note">Ends this many minutes after sunset</div>
+      <div class="step" data-key="lgAfter"></div>
+      <div class="row-note">Worked out on this phone from the date and the saved location, then set about a minute to the safe side. The location stays on this phone. It is a guide: the state's rule book governs, so set the minutes to match it.</div>
+    </div>
+    <div class="row">
+      <div class="row-lbl">Hold to start a call</div>
+      <div class="seg" data-key="hold"></div>
+      <div class="row-note">Stop uses the same hold.</div>
+    </div>
+    <div class="row">
+      <div class="row-lbl">Hold for a snort wheeze</div>
+      <div class="seg" data-key="holdShot"></div>
+      <div class="row-note">Call now and Unmute use the same hold.</div>
+    </div>
+    <div class="row">
+      <div class="row-lbl">The sound starts</div>
+      <div class="seg" data-key="startOn"></div>
+      <div class="row-note">With "When I let go" you can keep a full button held and pick the moment. Slide off the button to cancel.</div>
+    </div>
+    <div class="row">
+      <div class="row-lbl">Screen</div>
+      <div class="seg" data-key="red"></div>
+    </div>
+    <div class="row">
+      <div class="row-lbl">Volume check</div>
+      <div class="row-note">Plays 40 seconds of a call's busiest round. Set the level with the phone's side buttons. Mute ends it.</div>
+      <div id="checks" class="checks"></div>
+    </div>
+    <div class="row">
+      <div class="row-lbl">Saved on this phone</div>
+      <div id="saved-detail" class="row-note"></div>
+      <button type="button" id="b-redo" class="small">Download again</button>
+    </div>
+    <div class="row">
+      <div class="row-lbl">If a call will not play</div>
+      <div class="seg" data-key="src"></div>
+      <div class="row-note">"From memory" is the normal setting. Try "Direct" only if a saved call stays silent.</div>
+      <pre id="diag" class="diag"></pre>
+    </div>
+  </div>
+</div>
+
+<audio id="player" preload="auto"></audio>
+<script src="app.js"></script>
+</body>
+</html>
